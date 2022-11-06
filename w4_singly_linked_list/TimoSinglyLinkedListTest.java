@@ -1,21 +1,19 @@
-package week04;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class TimoLinkedListTest {
+class TimoSinglyLinkedListTest {
 
     @DisplayName("제일 앞에 요소 삽입")
     @Test
     void pushFront() {
         //given
-        TimoLinkedList linkedListEmpty = new TimoLinkedList();
-        TimoLinkedList linkedListAppend = new TimoLinkedList();
-        Node fistNode = new Node(1);
-        Node secondNode = new Node(1);
+        TimoSinglyLinkedList linkedListEmpty = new TimoSinglyLinkedList();
+        TimoSinglyLinkedList linkedListAppend = new TimoSinglyLinkedList();
+        TimoNode fistNode = new TimoNode(1);
+        TimoNode secondNode = new TimoNode(1);
 
         //when
         linkedListEmpty.pushFront(fistNode);
@@ -31,11 +29,11 @@ class TimoLinkedListTest {
     @Test
     void pushBack() {
         //given
-        TimoLinkedList linkedListEmpty = new TimoLinkedList();
-        Node firstNode = new Node(1);
+        TimoSinglyLinkedList linkedListEmpty = new TimoSinglyLinkedList();
+        TimoNode firstNode = new TimoNode(1);
 
-        TimoLinkedList linkedListAppend = new TimoLinkedList();
-        Node secondNode = new Node(2);
+        TimoSinglyLinkedList linkedListAppend = new TimoSinglyLinkedList();
+        TimoNode secondNode = new TimoNode(2);
 
         //when
         linkedListEmpty.pushBack(firstNode);
@@ -51,17 +49,17 @@ class TimoLinkedListTest {
     @Test
     void popFirst() {
         //given
-        TimoLinkedList linkedList = new TimoLinkedList();
-        Node firstNode = new Node(1);
-        Node secondNode = new Node(2);
-        Node thirdNode = new Node(3);
+        TimoSinglyLinkedList linkedList = new TimoSinglyLinkedList();
+        TimoNode firstNode = new TimoNode(1);
+        TimoNode secondNode = new TimoNode(2);
+        TimoNode thirdNode = new TimoNode(3);
 
         linkedList.pushFront(thirdNode);
         linkedList.pushFront(secondNode);
         linkedList.pushFront(firstNode);
 
         //when
-        Node popNode = linkedList.popFront();
+        TimoNode popNode = linkedList.popFront();
 
         //then
         assertThat(popNode).isEqualTo(firstNode);
@@ -71,17 +69,17 @@ class TimoLinkedListTest {
     @Test
     void popLast() {
         //given
-        TimoLinkedList linkedList = new TimoLinkedList();
-        Node firstNode = new Node(1);
-        Node secondNode = new Node(2);
-        Node thirdNode = new Node(3);
+        TimoSinglyLinkedList linkedList = new TimoSinglyLinkedList();
+        TimoNode firstNode = new TimoNode(1);
+        TimoNode secondNode = new TimoNode(2);
+        TimoNode thirdNode = new TimoNode(3);
 
         linkedList.pushBack(firstNode);
         linkedList.pushBack(secondNode);
         linkedList.pushBack(thirdNode);
 
         //when
-        Node popNode = linkedList.popBack();
+        TimoNode popNode = linkedList.popBack();
 
         //then
         assertThat(popNode).isEqualTo(thirdNode);
@@ -92,7 +90,7 @@ class TimoLinkedListTest {
     @Test
     void popFirstException() {
         //given
-        TimoLinkedList linkedList = new TimoLinkedList();
+        TimoSinglyLinkedList linkedList = new TimoSinglyLinkedList();
 
         //when & then
         assertThatThrownBy(linkedList::popFront)
@@ -107,13 +105,13 @@ class TimoLinkedListTest {
     @Test
     void search() {
         //given
-        TimoLinkedList linkedList = new TimoLinkedList();
-        linkedList.pushBack(new Node(1));
-        linkedList.pushBack(new Node(2));
-        linkedList.pushBack(new Node(3));
+        TimoSinglyLinkedList linkedList = new TimoSinglyLinkedList();
+        linkedList.pushBack(new TimoNode(1));
+        linkedList.pushBack(new TimoNode(2));
+        linkedList.pushBack(new TimoNode(3));
 
         //when
-        Node findNode =  linkedList.search(2);
+        TimoNode findNode =  linkedList.search(2);
 
         //then
         assertThat(findNode.getKey()).isEqualTo(2);
