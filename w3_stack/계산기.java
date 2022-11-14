@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class 계산기 {
+    // fixme 한계 : 1의 자리만 계산 가능ㅎ 계산 타입을 캐릭터로 해버려서ㅋ...
     public static double calculate(String infixExpression) {
         List<Character> postfix = convertInfixToPostfix(infixExpression);
         return calculatePostfix(postfix);
@@ -49,7 +50,7 @@ public class 계산기 {
         for (int i = 0; i < postfix.size(); i++) {
             char token = postfix.get(i);
             if (isNumber(token)) {
-                operands.push(Double.valueOf(token));
+                operands.push((double)Character.getNumericValue(token));
             } else {
                 num2 = operands.pop();
                 num1 = operands.pop();
