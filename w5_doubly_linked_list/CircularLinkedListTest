@@ -1,0 +1,215 @@
+package my.study.data_structuress.linkedlist.doubly
+
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import java.util.stream.Stream
+
+internal class CircularLinkedListTest {
+    @BeforeEach
+    fun setUp() {
+        firstNode.prev = null
+        firstNode.next = secondNode
+        secondNode.prev = firstNode
+        secondNode.next = thirdNode
+        thirdNode.prev = secondNode
+        thirdNode.next = null
+    }
+
+    @Test
+    fun splice() {
+        // given
+        val linkedList = CircularLinkedList()
+
+        // when
+        linkedList.splice(firstNode, secondNode, linkedList.head)
+
+        // then
+        assertThat(linkedList.head.next).isEqualTo(firstNode)
+        assertThat(linkedList.head.prev).isEqualTo(secondNode)
+        assertThat(secondNode.next).isEqualTo(linkedList.head)
+        assertThat(firstNode.prev).isEqualTo(linkedList.head)
+        assertThat(thirdNode.next).isEqualTo(null)
+        assertThat(thirdNode.prev).isEqualTo(null)
+    }
+
+    @Test
+    fun `moveAfter-두번째 노드를 세번째 노드 뒤로 이동시킨다`() {
+        // given
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        // when
+        linkedList.moveAfter(secondNode, thirdNode)
+
+        // then
+        assertThat(thirdNode.next).isEqualTo(secondNode)
+        assertThat(secondNode.prev).isEqualTo(thirdNode)
+    }
+
+    @Test
+    fun `moveBefore-세번째 노드를 두번째 노드 앞으로 이동시킨다`() {
+        // given
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        // when
+        linkedList.moveBefore(thirdNode, secondNode)
+
+        // then
+        assertThat(thirdNode.next).isEqualTo(secondNode)
+        assertThat(secondNode.prev).isEqualTo(thirdNode)
+    }
+
+    //todo using @ParameterizedTest
+    @Test
+    fun insertAfter() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = linkedList.head
+        val originalNextNodeOfPosition = position.next
+
+        // when
+        linkedList.insertAfter(newKey, position)
+
+        // then
+        assertThat(position.next!!.key).isEqualTo(newKey)
+        assertThat(originalNextNodeOfPosition!!.prev!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun insertAfter2() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = firstNode
+        val originalNextNodeOfPosition = position.next
+
+        // when
+        linkedList.insertAfter(newKey, position)
+
+        // then
+        assertThat(position.next!!.key).isEqualTo(newKey)
+        assertThat(originalNextNodeOfPosition!!.prev!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun insertAfter3() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = thirdNode
+        val originalNextNodeOfPosition = position.next
+
+        // when
+        linkedList.insertAfter(newKey, position)
+
+        // then
+        assertThat(position.next!!.key).isEqualTo(newKey)
+        assertThat(originalNextNodeOfPosition!!.prev!!.key).isEqualTo(newKey)
+    }
+
+    //todo using @ParameterizedTest
+    @Test
+    fun insertBefore() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = linkedList.head
+        val originalPreviousNodeOfPosition = position.prev
+
+        // when
+        linkedList.insertBefore(newKey, position)
+
+        // then
+        assertThat(position.prev!!.key).isEqualTo(newKey)
+        assertThat(originalPreviousNodeOfPosition!!.next!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun insertBefore2() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = firstNode
+        val originalPreviousNodeOfPosition = position.prev
+
+        // when
+        linkedList.insertBefore(newKey, position)
+
+        // then
+        assertThat(position.prev!!.key).isEqualTo(newKey)
+        assertThat(originalPreviousNodeOfPosition!!.next!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun insertBefore3() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        val position = thirdNode
+        val originalPreviousNodeOfPosition = position.prev
+
+        // when
+        linkedList.insertBefore(newKey, position)
+
+        // then
+        assertThat(position.prev!!.key).isEqualTo(newKey)
+        assertThat(originalPreviousNodeOfPosition!!.next!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun pushFront() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        // when
+        linkedList.pushFront(newKey)
+
+        // then
+        assertThat(linkedList.head.next!!.key.toString()).isEqualTo(newKey)
+    }
+
+    @Test
+    fun pushBack() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+        linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        // when
+        linkedList.pushBack(newKey)
+
+        // then
+        assertThat(linkedList.head.prev!!.key.toString()).isEqualTo(newKey)
+    }
+
+    companion object GivenLinkedList {
+        private val firstNode = Node(1)
+        private val secondNode = Node(2)
+        private val thirdNode = Node(3)
+    }
+
+    fun generateNode(): Stream<Node> {
+        return Stream.of(
+            firstNode,
+            secondNode,
+            thirdNode,
+        )
+    }
+}
