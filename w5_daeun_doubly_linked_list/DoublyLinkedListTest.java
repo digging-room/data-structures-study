@@ -187,6 +187,46 @@ class DoublyLinkedListTest {
     assertThat(arrayToStr(doublyLinkedList.toArray())).isEqualTo("a-b-x-y");
   }
 
+  @DisplayName("탐색")
+  @Test
+  void search() {
+    //given
+    DoublyLinkedList doublyLinkedList = new DoublyLinkedList();
+    Node aNode = new Node("a");
+    Node bNode = new Node("b");
+    Node xNode = new Node("x");
+
+    doublyLinkedList.originPushFront(xNode);
+    doublyLinkedList.originPushFront(bNode);
+    doublyLinkedList.originPushFront(aNode);
+
+    //when
+    Node searchNode = doublyLinkedList.search("a");
+
+    //then
+    assertThat(searchNode.getKey()).isEqualTo("a");
+  }
+
+  @DisplayName("삭제")
+  @Test
+  void remove() {
+    //given
+    DoublyLinkedList doublyLinkedList = new DoublyLinkedList();
+    Node aNode = new Node("a");
+    Node bNode = new Node("b");
+    Node xNode = new Node("x");
+
+    doublyLinkedList.originPushFront(xNode);
+    doublyLinkedList.originPushFront(bNode);
+    doublyLinkedList.originPushFront(aNode);
+
+    //when
+    doublyLinkedList.remove(bNode);
+
+    //then
+    assertThat(arrayToStr(doublyLinkedList.toArray())).isEqualTo("a-x");
+  }
+
   private String arrayToStr(String[] keyList) {
     return Arrays.stream(keyList)
         .collect(Collectors.joining("-"));

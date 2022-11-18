@@ -73,6 +73,30 @@ public class DoublyLinkedList {
     this.insertBefore(this.head, key);
   }
 
+  // 탐색
+  public Node search(String key) {
+    Node searchNode = this.head;
+    if(searchNode.getNext() == null) throw new IllegalStateException("빈 리스트입니다.");
+    while (searchNode.getNext() != this.head) {
+      if(key.equals(searchNode.getKey())) {
+        return searchNode;
+      }
+      searchNode = searchNode.getNext();
+    }
+
+    return searchNode;
+  }
+
+  // 삭제
+  public void remove(Node removeNode) {
+    if(removeNode == null || removeNode.getKey() == null) {
+      return;
+    }
+    removeNode.getPrev().changeNext(removeNode.getNext());
+    removeNode.getNext().changePrev(removeNode.getPrev());
+    this.size--;
+  }
+
   public String[] toArray() {
     String[] array = new String[size];
     Node x = head.getNext();
@@ -82,6 +106,5 @@ public class DoublyLinkedList {
     }
     return array;
   }
-
 
 }
