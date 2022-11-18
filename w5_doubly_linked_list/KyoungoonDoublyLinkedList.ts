@@ -11,132 +11,174 @@ class DoublyLinkedListNode<Key> {
 }
 
 class DoublyLinkedList<Key> {
-  public head: DoublyLinkedListNode<Key>
-  private size: number
+  public head: DoublyLinkedListNode<Key> = new DoublyLinkedListNode(null as Key)
+  private size: number = 0
 
   get length() {
     return this.size
   }
 
-  private get isOnlyHasHeadNode() {
-    return this.size === 1
+
+  /**
+   * @description nodeA와 nodeB 사이의 노드를 잘라서 targetNode 다음으로 연결하는 메서드
+   * 조건 1. nodeA의 next를 따라가다보면 nodeB가 나온다(a -> ... -> b).
+   * 조건 2. nodeA와 nodeB 사이에 head 노드가 없어야 한다.
+   */
+  splice(
+    nodeA: DoublyLinkedListNode<Key>,
+    nodeB: DoublyLinkedListNode<Key>,
+    targetNode: DoublyLinkedListNode<Key>
+  ) {
+    if (this.size === 0) {
+      throw new Error('spliace must size > 0')
+    }
+
+    const aPrev = nodeA.prev // null
+    const bNext = nodeB.next // null
+
+    // cutting
+    aPrev && (aPrev.next = bNext)
+    bNext && (bNext.prev = aPrev)
+
+    const targetNodeNext = targetNode.next
+
+    // splicing
+    targetNode.next = nodeA
+    nodeA.prev = targetNode
+    nodeB.next = targetNodeNext
+    targetNodeNext!.prev = nodeB
   }
 
-  constructor(key: Key) {
-    this.head = new DoublyLinkedListNode(key)
-    this.size = 1
+  moveAfter(
+    node: DoublyLinkedListNode<Key>,
+    targetNode: DoublyLinkedListNode<Key>
+  ) {
+    this.splice(node, node, targetNode)
   }
 
-  insertAfter(targetNode: DoublyLinkedListNode<Key>, key: Key) {
-    if (this.isOnlyHasHeadNode) {
-      this.insertSecondNode(key)
+  moveBefore(
+    node: DoublyLinkedListNode<Key>,
+    targetNode: DoublyLinkedListNode<Key>
+  ) {
+    this.splice(node, node, targetNode.prev!)
+  }
+
+  insertAfter(
+    node: DoublyLinkedListNode<Key>,
+    key: Key
+  ) {
+    if (this.size === 0) {
+      this.insertFirstNode(key)
       return
     }
 
-    const newNode = new DoublyLinkedListNode(key)
-
-    newNode.prev = targetNode
-    newNode.next = targetNode.next
-    targetNode.next!.prev = newNode
-    targetNode.next = newNode
+    this.moveAfter(new DoublyLinkedListNode(key), node)
     this.size += 1
   }
 
-  insertBefore(targetNode: DoublyLinkedListNode<Key>, key: Key) {
-    if (this.isOnlyHasHeadNode) {
-      this.insertSecondNode(key)
+  insertBefore(
+    node: DoublyLinkedListNode<Key>,
+    key: Key
+  ) {
+    if (this.size === 0) {
+      this.insertFirstNode(key)
       return
     }
 
-    const newNode = new DoublyLinkedListNode(key)
-
-    newNode.prev = targetNode.prev
-    newNode.next = targetNode
-    targetNode.prev!.next = newNode
-    targetNode.prev = newNode
+    this.moveBefore(new DoublyLinkedListNode(key), node)
     this.size += 1
   }
 
-  private insertSecondNode(key: Key) {
+  private insertFirstNode(key: Key) {
     const newNode = new DoublyLinkedListNode(key)
     newNode.prev = this.head
     newNode.next = this.head
     this.head.prev = newNode
     this.head.next = newNode
     this.size += 1
-
   }
 
   pushFront(key: Key) {
-    if (this.isOnlyHasHeadNode) {
-      this.insertSecondNode(key)
-      return
-    }
-
     this.insertAfter(this.head, key)
   }
 
   pushBack(key: Key) {
-    if (this.isOnlyHasHeadNode) {
-      this.insertSecondNode(key)
-      return
-    }
-
     this.insertBefore(this.head, key)
   }
 
   remove(key: Key) {
-    if (this.size === 1) {
-      throw new Error(`Can't remove last node`)
-    }
+    const node = this.search(key)
 
-    const targetNode = this.search(key)
-
-    if (!targetNode) {
-      throw new Error(`There is no node with key is '${key}'`)
-    }
-
-    // head 삭제할 경우 새로운 head 지정
-    if (this.head.key === key) {
-      this.head = this.head.next!
-    }
-
-    if (this.size === 2) {
-      targetNode.prev!.next = null
-      targetNode.prev!.prev = null
-      this.size -= 1
+    if (!node) {
       return
     }
 
-    targetNode.prev!.next = targetNode.next
-    targetNode.next!.prev = targetNode.prev
+    node.prev!.next = node.next
+    node.next!.prev = node.prev
     this.size -= 1
   }
 
   popFront() {
-    this.remove(this.head.key)
+    if (this.size === 0) {
+      return
+    }
+
+    this.remove(this.head.next!.key)
   }
 
   popBack() {
-    this.remove(this.head.prev?.key as Key)
+    if (this.size === 0) {
+      return
+    }
+
+    this.remove(this.head.prev!.key)
+  }
+
+  join(list: DoublyLinkedList<Key>) {
+    if (list.length === 0) {
+      return
+    }
+
+    if (this.size === 0) {
+      list.head.next!.prev = this.head
+      list.head.prev!.next = this.head
+      this.head.next = list.head.next
+      this.head.prev = list.head.prev
+      this.size = list.length
+      return
+    }
+
+    this.splice(list.head.next!, list.head.prev!, this.head.prev!)
+    this.size += list.length
   }
 
   search(key: Key) {
-    let node = this.head
-    for(let i = 0; i < this.size; i += 1) {
+    if (this.size === 0) {
+      return null
+    }
+
+    let node = this.head.next!
+    while (node !== this.head) {
       if (node.key === key) {
         return node
+      } else {
+        node = node.next!
       }
-      node = node.next!
     }
 
     return null
   }
 
   print() {
+    if (this.size === 0) {
+      console.log('')
+      return
+    }
+
     let result = []
-    let node = this.head
-    for(let i = 0; i < this.size; i += 1) {
+    let node = this.head.next!
+
+    while(node !== this.head) {
       result.push(node.key)
       node = node.next!
     }
@@ -145,19 +187,18 @@ class DoublyLinkedList<Key> {
   }
 }
 
-const list = new DoublyLinkedList(1)
-list.insertAfter(list.head, 2)
-list.insertAfter(list.search(2)!, 4)
-list.insertBefore(list.search(4)!, 3)
-list.pushFront(1.1)
-list.pushBack(0)
+const list = new DoublyLinkedList()
+const list2 = new DoublyLinkedList()
+list2.pushFront(1)
+list2.pushBack(2)
+list.pushFront(0)
+let node = list2.search(2)
+list2.insertAfter(node!, 4)
+node = list2.search(4)
+list2.insertBefore(node!, 3)
+list2.remove(4)
+list.join(list2)
 list.print()
-list.remove(1.1)
-list.print()
+list.popBack()
 list.popFront()
-list.print()
-list.popBack()
-list.popBack()
-list.popBack()
-list.popBack()
 list.print()
