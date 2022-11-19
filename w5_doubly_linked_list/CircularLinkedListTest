@@ -34,6 +34,21 @@ internal class CircularLinkedListTest {
     }
 
     @Test
+    fun splice_노드가_한개일때_사용() {
+        // given
+        val linkedList = CircularLinkedList()
+
+        // when
+        linkedList.splice(firstNode, firstNode, linkedList.head)
+
+        // then
+        assertThat(linkedList.head.next).isEqualTo(firstNode)
+        assertThat(linkedList.head.prev).isEqualTo(firstNode)
+        assertThat(firstNode.next).isEqualTo(linkedList.head)
+        assertThat(firstNode.prev).isEqualTo(linkedList.head)
+    }
+
+    @Test
     fun `moveAfter-두번째 노드를 세번째 노드 뒤로 이동시킨다`() {
         // given
         val linkedList = CircularLinkedList()
@@ -63,7 +78,7 @@ internal class CircularLinkedListTest {
 
     //todo using @ParameterizedTest
     @Test
-    fun insertAfter() {
+    fun insertAfter_헤드_노드_뒤에_삽입() {
         // given
         val newKey = "new"
         val linkedList = CircularLinkedList()
@@ -81,7 +96,7 @@ internal class CircularLinkedListTest {
     }
 
     @Test
-    fun insertAfter2() {
+    fun insertAfter2_첫번째_노드_뒤에_삽입() {
         // given
         val newKey = "new"
         val linkedList = CircularLinkedList()
@@ -114,6 +129,22 @@ internal class CircularLinkedListTest {
         // then
         assertThat(position.next!!.key).isEqualTo(newKey)
         assertThat(originalNextNodeOfPosition!!.prev!!.key).isEqualTo(newKey)
+    }
+
+    @Test
+    fun insertAfter4_빈_링크드리스트에_삽입() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+
+        val position = linkedList.head
+
+        // when
+        linkedList.insertAfter(newKey, position)
+
+        // then
+        assertThat(position.next!!.key).isEqualTo(newKey)
+        assertThat(position.prev!!.key).isEqualTo(newKey)
     }
 
     //todo using @ParameterizedTest
@@ -172,6 +203,22 @@ internal class CircularLinkedListTest {
     }
 
     @Test
+    fun insertBefore4_빈_링크드리스트에_삽입() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+
+        val position = linkedList.head
+
+        // when
+        linkedList.insertBefore(newKey, position)
+
+        // then
+        assertThat(position.prev!!.key).isEqualTo(newKey)
+        assertThat(position.next!!.key).isEqualTo(newKey)
+    }
+
+    @Test
     fun pushFront() {
         // given
         val newKey = "new"
@@ -186,11 +233,38 @@ internal class CircularLinkedListTest {
     }
 
     @Test
+    fun pushFront_빈_링크드리스트에_삽입() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
+
+        // when
+        linkedList.pushFront(newKey)
+
+        // then
+        assertThat(linkedList.head.next!!.key.toString()).isEqualTo(newKey)
+    }
+
+    @Test
     fun pushBack() {
         // given
         val newKey = "new"
         val linkedList = CircularLinkedList()
         linkedList.splice(firstNode, thirdNode, linkedList.head)
+
+        // when
+        linkedList.pushBack(newKey)
+
+        // then
+        assertThat(linkedList.head.prev!!.key.toString()).isEqualTo(newKey)
+    }
+
+
+    @Test
+    fun pushBack_빈_링크드리스트에_삽입() {
+        // given
+        val newKey = "new"
+        val linkedList = CircularLinkedList()
 
         // when
         linkedList.pushBack(newKey)
