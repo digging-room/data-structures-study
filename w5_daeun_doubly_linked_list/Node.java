@@ -8,8 +8,8 @@ public class Node {
 
   public Node(String key) {
     this.key = key;
-    this.prev = null;
-    this.next = null;
+    this.prev = this;
+    this.next = this;
   }
 
   public void changePrev(Node node) {
