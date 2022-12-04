@@ -1,0 +1,70 @@
+package my.study.data_structuress.linkedlist.doubly
+
+class CircularLinkedList {
+    val head: Node = Node()
+
+    // from 노드부터 to 노드까지의 노드를 position 노드 뒤로 이동시킴
+    fun splice(from: Node, to: Node, position: Node) {
+        // cut
+        from.prev?.next = to.next
+        to.next?.prev = from.prev
+
+        // paste
+        if (isEmpty()) {
+            position.prev = to
+            to.next = position
+            position.next = from
+            from.prev = position
+        }
+        else {
+            position.next?.prev = to
+            to.next = position.next
+            position.next = from
+            from.prev = position
+        }
+    }
+
+    fun moveAfter(target: Node, position: Node) {
+        if (isEmpty()) {
+            insertFirstNode(target)
+        } else {
+            splice(target, target, position)
+        }
+    }
+
+    fun moveBefore(target: Node, position: Node) {
+        if (isEmpty()) {
+            insertFirstNode(target)
+        } else {
+            splice(target, target, position.prev!!)
+        }
+    }
+
+    fun insertAfter(key: Any, position: Node) {
+        //size++
+        moveAfter(Node(key), position)
+    }
+
+    fun insertBefore(key: Any, position: Node) {
+        //size--
+        moveBefore(Node(key), position)
+    }
+
+    fun pushFront(key: Any) {
+        insertAfter(Node(key), head)
+    }
+
+    fun pushBack(key: Any) {
+        insertBefore(Node(key), head)
+    }
+
+    private fun isEmpty(): Boolean =
+        head.next == null
+
+    private fun insertFirstNode(targetNode: Node) {
+        head.prev = targetNode
+        head.next = targetNode
+        targetNode.next = head
+        targetNode.prev = head
+    }
+}
