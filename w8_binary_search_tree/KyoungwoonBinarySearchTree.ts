@@ -107,8 +107,6 @@ class BinarySearchTree {
             node = right
         }
 
-        console.log('delete', parent?.key, node?.key)
-
         // root
         if (isRootNode) {
             this.root = node
@@ -116,14 +114,14 @@ class BinarySearchTree {
                 node.parent = null
             }
 
-            // targetNode 자리에 대체 노드가 있는 경우
+        // targetNode 자리에 대체 노드가 있는 경우
         } else if (hasLeftNode || hasRightNode) {
             node!.parent = parent
 
             const side = parent.key < node!.key ? 'right' : 'left'
             parent[side] = node
 
-            // targetNode 자리의 대체 노드가 없는 경우
+        // targetNode 자리의 대체 노드가 없는 경우
         } else {
             const side = parent.key < targetNode.key ? 'right' : 'left'
             parent[side] = null
